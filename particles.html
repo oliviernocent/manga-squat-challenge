@@ -27,21 +27,21 @@
       constructor(state) {
         this.position = state[0].copy();
         this.velocity = state[1].copy();
-        this.angle = state[1].heading();
+        this.angle = state[1].heading() + PI / 2;
         this.lifetime = 50 + Math.random() * 50;
       }
 
       update(dt) {
         this.position.add(p5.Vector.mult(this.velocity, dt));
-        //this.velocity.mult(0.9);
+        this.velocity.mult(0.99);
         this.lifetime--;
       }
 
-      draw() {
-        fill(0, 255, 255, 0.4 * this.lifetime / 100);
+      draw(c) {
+        fill(red(c), green(c), blue(c), 0.4 * this.lifetime / 100);
         push();
         translate(this.position.x, this.position.y)
-        rotate(this.angle + PI/2);
+        rotate(this.angle);
         translate(-this.position.x, -this.position.y)
         triangle(this.position.x - 30, this.position.y, this.position.x + 30, this.position.y, this.position.x, this.position.y - 80);
         pop();
@@ -53,6 +53,7 @@
         this.begin = begin.copy();
         this.end = end.copy();
         this.direction = direction;
+        this.color = color(255, 240, 10);
         this.pool = []
       }
 
@@ -72,11 +73,15 @@
           this.pool.push(new Particle(this.initialState()))
       }
 
+      setColor(c) {
+        this.color = c;
+      }
+
       draw() {
         for (let i = 0; i < this.pool.length; i++) {
           this.pool[i].update(1 / 30);
           if (this.pool[i].lifetime < 0) this.pool[i] = new Particle(this.initialState());
-          this.pool[i].draw();
+          this.pool[i].draw(this.color);
         }
       }
     }
@@ -108,6 +113,7 @@
       }
     }
 
+    /*
     function mousePressed() {
       switch (pointCount) {
         case 0:
@@ -124,6 +130,7 @@
           break;
       }
     }
+    */
 
     function touchEnded() {
       switch (pointCount) {
@@ -134,10 +141,11 @@
         case 1:
           p1 = createVector(mouseX, mouseY);
           pointCount++;
-          particleSystem = new ParticleSystem(p0, p1, -1);
+          particleSystem = new ParticleSystem(p0, p1, 1);
           particleSystem.add(1000);
           break;
         default:
+          particleSystem.setColor(color(Math.random() * 255, Math.random() * 255, Math.random() * 255));
           break;
       }
     }
