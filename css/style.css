@@ -3,7 +3,6 @@ body, div, canvas {
   padding: 0;
 }
 
-#splashscreen,
 #ui {
   position: fixed;
   left: 0;
@@ -12,30 +11,27 @@ body, div, canvas {
   text-align: center;
 }
 
-#splashscreen > img {
+#ui img {
   animation: beat 1s 1s infinite;
-  margin-top: 10vh;
+  width: 20vw;
+  margin-left: 40vw;
+  margin-top: 40vh;
 }
 
 @keyframes beat {
   0% {
-    width: 100%;
+  width: 20vw;
+  margin-left: 40vw;
   }
 
   50% {
-    width: 80%;
-  }
-
-  50% {
-    width: 60%;
-  }
-
-  50% {
-    width: 80%;
+  width: 10vw;
+  margin-left: 45vw;
   }
 
   100% {
-    width: 100%;
+  width: 20vw;
+  margin-left: 40vw;
   }
 }
 

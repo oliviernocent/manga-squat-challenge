@@ -11,7 +11,6 @@ let captureScaleFactor, captureOffsetX;
 
 let bodyPose;
 let pose;
-let poseReady = false;
 
 let squatCounter = 0;
 let squatDone = false;
@@ -137,9 +136,7 @@ function setup() {
 function gotPoses(results) {
   // Save the output to the pose variable
   pose = results[0];
-  if (pose) {
-    poseReady = true;
-  }
+  if (pose) document.querySelector("#loading").style.display = "none";
 }
 
 function distance(pointA, pointB) {
@@ -204,9 +201,11 @@ function draw() {
       pop();
     } else {
       // No more humain being...
+      console.log("No more humain being...")
       squatCounter = 0;
       squatDone = false;
       currentLevel = 0;
+      document.querySelector("#loading").style.display = "inline";
 
       // Display the new value
       squatcount.textContent = squatCounter;
