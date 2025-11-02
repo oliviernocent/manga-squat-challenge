@@ -15,6 +15,8 @@ let pose;
 let squatCounter = 0;
 let squatDone = false;
 
+let leftEmitter, rightEmitter;
+
 let level = [
   {
     value: 0,
@@ -69,27 +71,20 @@ let currentLevel = 0;
 
 function preload() {
   // Charger les images depuis les URLs fournies
-  level[0].hair = loadImage(
-    "img/hair/black.png"
-  );
-  level[1].hair = loadImage(
-    "img/hair/gold.png"
-  );
-  level[2].hair = loadImage(
-    "img/hair/red.png"
-  );
-  level[3].hair = loadImage(
-    "img/hair/pink.png"
-  );
-  level[4].hair = loadImage(
-    "img/hair/blue.png"
-  );
-  level[5].hair = loadImage(
-    "img/hair/green.png"
-  );
-  level[6].hair = loadImage(
-    "img/hair/silver.png"
-  );
+  level[0].hair = loadImage("img/hair/black.png");
+  level[0].color = color(0);
+  level[1].hair = loadImage("img/hair/gold.png");
+  level[1].color = color(255, 240, 0);
+  level[2].hair = loadImage("img/hair/red.png");
+  level[2].color = color(255, 20, 0);
+  level[3].hair = loadImage("img/hair/pink.png");
+  level[3].color = color(255, 10, 255);
+  level[4].hair = loadImage("img/hair/blue.png");
+  level[4].color = color(10, 40, 255);
+  level[5].hair = loadImage("img/hair/green.png");
+  level[5].color = color(10, 255, 30);
+  level[6].hair = loadImage("img/hair/silver.png");
+  level[6].color = color(200);
 }
 
 // When the model is loaded
@@ -103,6 +98,8 @@ function modelLoaded() {
 function setup() {
   let canvas = createCanvas(windowWidth, windowHeight);
   canvas.parent("canvas");
+
+  colorMode(RGB, 255, 255, 255, 1);
 
   let constraints = {
     video: {
@@ -130,6 +127,9 @@ function setup() {
     bodyPose = ml5.bodyPose(poseOptions, modelLoaded);
   });
   capture.hide();
+
+  leftEmitter = new ParticleSystem(createVector(0, 0), createVector(0, height), -1);
+  rightEmitter = new ParticleSystem(createVector(0, width), createVector(width, height), 1);
 }
 
 // Callback function for when bodyPose outputs data
@@ -165,6 +165,12 @@ function draw() {
         rightShoulder.confidence > 0.5 &&
         leftHip.confidence > 0.5
       ) {
+        leftEmitter.updateSegment(createVector(pose.right_shoulder.x, pose.right_shoulder.y),
+          createVector(pose.right_hip.x, pose.right_hip.y));
+
+        rightEmitter.updateSegment(createVector(pose.left_shoulder.x, pose.left_shoulder.y),
+          createVector(pose.left_hip.x, pose.left_hip.y));
+
         let shoulderWidth = distance(rightShoulder, leftShoulder);
         let proximityThreshold = shoulderWidth * 1.5;
         let currentDistance = distance(leftHip, leftAnkle);
@@ -174,9 +180,17 @@ function draw() {
             // Update squat counter
             squatCounter++;
             squatDone = true;
+            if (squatCounter > 5) {
+              leftEmitter.add(20);
+              rightEmitter.add(20);
+            }
 
             // Reach next level?
-            if (squatCounter >= level[currentLevel + 1].value) currentLevel++;
+            if (squatCounter >= level[currentLevel + 1].value) {
+              currentLevel++;
+              leftEmitter.setColor(level[currentLevel].color);
+              rightEmitter.setColor(level[currentLevel].color);
+            }
 
             // Display the new value
             squatcount.textContent = squatCounter;
@@ -184,6 +198,11 @@ function draw() {
         } else {
           squatDone = false;
         }
+      }
+
+      if (squatCounter > 5) {
+        leftEmitter.draw();
+        rightEmitter.draw();
       }
 
       let p1 = pose.right_ear;
@@ -205,6 +224,8 @@ function draw() {
       squatCounter = 0;
       squatDone = false;
       currentLevel = 0;
+      leftEmitter.reset();
+      rightEmitter.reset();
       document.querySelector("#loading").style.display = "inline";
 
       // Display the new value

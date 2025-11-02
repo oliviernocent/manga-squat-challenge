@@ -24,10 +24,11 @@
   <div id="canvas"></div>
   <script>
     class Particle {
-      constructor(state) {
+      constructor(state, color) {
         this.position = state[0].copy();
         this.velocity = state[1].copy();
         this.angle = state[1].heading() + PI / 2;
+        this.color = color;
         this.lifetime = 50 + Math.random() * 50;
       }
 
@@ -37,8 +38,8 @@
         this.lifetime--;
       }
 
-      draw(c) {
-        fill(red(c), green(c), blue(c), 0.4 * this.lifetime / 100);
+      draw() {
+        fill(red(this.color), green(this.color), blue(this.color), 0.4 * this.lifetime / 100);
         push();
         translate(this.position.x, this.position.y)
         rotate(this.angle);
@@ -70,7 +71,12 @@
 
       add(n) {
         for (let i = 0; i < n; i++)
-          this.pool.push(new Particle(this.initialState()))
+          this.pool.push(new Particle(this.initialState(), this.color))
+      }
+
+      updateSegment(begin, end) {
+        this.begin = begin.copy();
+        this.end = end.copy();        
       }
 
       setColor(c) {
@@ -80,8 +86,8 @@
       draw() {
         for (let i = 0; i < this.pool.length; i++) {
           this.pool[i].update(1 / 30);
-          if (this.pool[i].lifetime < 0) this.pool[i] = new Particle(this.initialState());
-          this.pool[i].draw(this.color);
+          if (this.pool[i].lifetime < 0) this.pool[i] = new Particle(this.initialState(), this.color);
+          this.pool[i].draw();
         }
       }
     }
