@@ -103,7 +103,7 @@ function setup() {
 
   let constraints = {
     video: {
-      facingMode: "environment", // "user", "environment"
+      facingMode: "user", // "user", "environment"
     },
     audio: false,
   };
@@ -114,7 +114,7 @@ function setup() {
 
     // Load the bodyPose model
     let poseOptions = {
-      modelType: "SINGLEPOSE_THUNDER", // "MULTIPOSE_LIGHTNING", "SINGLEPOSE_LIGHTNING", or "SINGLEPOSE_THUNDER".
+      modelType: "SINGLEPOSE_LIGHTNING", // "MULTIPOSE_LIGHTNING", "SINGLEPOSE_LIGHTNING", "MULTIPOSE_THUNDER" or "SINGLEPOSE_THUNDER". LIGHTNING for higher speed, THUNDER for higher accuaracy
       enableSmoothing: true,
       minPoseScore: 0.25,
       multiPoseMaxDimension: 256,
