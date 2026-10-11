@@ -7,31 +7,39 @@ body, div, canvas {
   position: fixed;
   left: 0;
   top: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: 42;
   text-align: center;
 }
 
-#ui img {
+#loading {
   animation: beat 1s 1s infinite;
   width: 20vw;
-  margin-left: 40vw;
+  margin-left: 0vw;
   margin-top: 40vh;
+}
+
+#camera {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
 }
 
 @keyframes beat {
   0% {
   width: 20vw;
-  margin-left: 40vw;
+  margin-left: 0vw;
   }
 
   50% {
   width: 10vw;
-  margin-left: 45vw;
+  margin-left: 5vw;
   }
 
   100% {
   width: 20vw;
-  margin-left: 40vw;
+  margin-left: 0vw;
   }
 }
 
